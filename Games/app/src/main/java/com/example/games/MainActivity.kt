@@ -20,9 +20,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.NavController
+import androidx.navigation.NavHost
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberImagePainter
 import com.example.games.model.FreeGamesItem
 import com.example.games.ui.theme.GamesTheme
@@ -35,6 +45,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             GamesTheme {
                 GameApp(viewModel = viewModel)
+                BottomNav()
             }
         }
     }
@@ -49,66 +60,93 @@ fun GameApp(viewModel: GameViewModel) {
     )
 }
 
-/*@Composable
-fun FreeGames(viewModel: GameViewModel) {
-    val freeGames by viewModel.freeGamesFlow.collectAsState()
-    freeGames?.let {
-        LazyColumn(
-            contentPadding = PaddingValues(horizontal = 16.dp,vertical = 16.dp)
-        ) {
-            items(items = it) { game ->
-                GameItem(game = game)
-            }
-        }
-    }
-}
-
 @Composable
-fun GameItem(game: FreeGamesItem) {
-    val context = LocalContext.current
-    val webViewIntent = Intent(context,WebViewActivity::class.java)
-    webViewIntent.putExtra("url",game.freetogameProfileUrl)
-    Card(
-        modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 8.dp)
-            .clickable {
-                context.startActivity(webViewIntent)
-            }
-
-
-            .fillMaxWidth(),
-        elevation = 4.dp,
-        backgroundColor = Color.White,
-        shape = RoundedCornerShape(corner = CornerSize(8.dp))
+fun BottomNav(){
+    val navController = rememberNavController()
+    Scaffold(
+        topBar = { TopBar() },
+        bottomBar = { BottomNavigationBar(navController) }
     ) {
-        Row {
-            ImageCompo(game = game)
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-                    .align(Alignment.CenterVertically)
-            ) {
-                Text(text = game.title, style = MaterialTheme.typography.h6)
-                Text(text = game.developer, style = MaterialTheme.typography.caption)
-            }
-        }
+        Navigation(navController)
     }
 }
 
 @Composable
-fun ImageCompo(game: FreeGamesItem) {
-    Image(
-        painter = rememberImagePainter(game.thumbnail),
-        contentDescription = null ,
-        modifier = Modifier
-            .padding(8.dp)
-            .size(84.dp)
-            .clip(RoundedCornerShape(corner = CornerSize(16.dp)))
+fun TopBar(){
+    TopAppBar(
+        title = {Text(text = "Bottom Navigation", fontSize = 18.sp)},
+        backgroundColor = Color.Gray,
+        contentColor = Color.Black
     )
 }
 
- */
+@Composable
+fun BottomNavigationBar(navController: NavController){
+    val items = listOf(
+        NavigationItems.Home,
+        NavigationItems.Settings
+    )
+    BottomNavigation(
+        backgroundColor = Color.Gray,
+        contentColor = Color.Black
+    ){
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute = navBackStackEntry?.destination?.route
+
+        items.forEach{items ->
+            BottomNavigationItem(
+                icon = { Icon(painter = painterResource(id = items.Icon), contentDescription = items.Title)},
+                label = { Text(text = items.Title)},
+                selectedContentColor = Color.Black,
+                unselectedContentColor = Color.Black.copy(0.4f),
+                alwaysShowLabel = true,
+                selected = currentRoute == items.route ,
+                onClick = {
+                    navController.navigate(items.route){
+                        navController.graph.startDestinationRoute?.let{ route ->
+                            popUpTo(route = route){
+                                saveState = true
+                            }
+                        }
+
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun SettingsScreen(){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
+        Text(
+            text = "Settings Screen",
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
+fun Navigation(navController: NavHostController){
+    NavHost(navController, startDestination = NavigationItems.Home.route){
+        composable(NavigationItems.Home.route){
+            GameApp(viewModel = GameViewModel())
+        }
+        composable(NavigationItems.Settings.route){
+            SettingsScreen()
+        }
+    }
+}
+
+
 
 
 
