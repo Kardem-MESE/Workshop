@@ -9,6 +9,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -74,7 +76,7 @@ fun BottomNav(){
 @Composable
 fun TopBar(){
     TopAppBar(
-        title = {Text(text = "Bottom Navigation", fontSize = 18.sp)},
+        title = {Text(text = "GAMES", fontSize = 18.sp)},
         backgroundColor = Color.Gray,
         contentColor = Color.Black
     )
@@ -83,8 +85,8 @@ fun TopBar(){
 @Composable
 fun BottomNavigationBar(navController: NavController){
     val items = listOf(
-        NavigationItems.Home,
-        NavigationItems.Settings
+        NavigationItems.Profil,
+        NavigationItems.Home
     )
     BottomNavigation(
         backgroundColor = Color.Gray,
@@ -119,17 +121,24 @@ fun BottomNavigationBar(navController: NavController){
 }
 
 @Composable
-fun SettingsScreen(){
+fun ProfilScreen(){
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Text(
-            text = "Settings Screen",
+            text = "You're Welcome!!",
             fontSize = 30.sp,
             fontWeight = FontWeight.Bold,
             color = Color.Black
+        )
+        Image(
+            painter = painterResource(id = R.drawable.hosgeldiniz),
+            contentDescription = "resim",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.size(200.dp)
+                .clip(CircleShape)
         )
     }
 }
@@ -140,8 +149,8 @@ fun Navigation(navController: NavHostController){
         composable(NavigationItems.Home.route){
             GameApp(viewModel = GameViewModel())
         }
-        composable(NavigationItems.Settings.route){
-            SettingsScreen()
+        composable(NavigationItems.Profil.route){
+            ProfilScreen()
         }
     }
 }
