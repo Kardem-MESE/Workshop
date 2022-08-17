@@ -83,4 +83,7 @@ dependencies {
     //bottomnavigationbar
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha09")
 
+    //splashscreen
+    implementation 'androidx.core:core-splashscreen:1.0.0-alpha02'
+
 }
