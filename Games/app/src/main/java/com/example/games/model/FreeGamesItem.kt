@@ -26,3 +26,5 @@ data class FreeGamesItem(
     @SerializedName("title")
     val title: String
     )
+
+

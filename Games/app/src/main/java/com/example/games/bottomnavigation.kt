@@ -27,7 +27,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.games.network.ApiService
+import com.example.games.repo.FreeGameRepo
 import com.example.games.viewmodel.GameViewModel
+import io.ktor.client.*
 
 @Composable
 fun BottomNav(){
@@ -123,7 +126,7 @@ fun Navigation(navController: NavHostController){
     NavHost(navController, startDestination = NavigationItems.Home.route){
 
         composable(NavigationItems.Home.route){
-           GameApp(viewModel = GameViewModel())
+           GameApp(viewModel = GameViewModel(repo = FreeGameRepo(apiService = ApiService(client = HttpClient()))))
         }
         composable(NavigationItems.Profil.route){
             ProfilScreen()

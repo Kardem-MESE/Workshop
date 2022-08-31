@@ -21,9 +21,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.rememberAsyncImagePainter
 import coil.compose.rememberImagePainter
+import com.example.games.model.FreeGames
 import com.example.games.model.FreeGamesItem
 import com.example.games.viewmodel.GameViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun FreeGames(
@@ -52,8 +55,6 @@ fun GameItem(game: FreeGamesItem) {
             .clickable {
                 context.startActivity(webViewIntent)
             }
-
-
             .fillMaxWidth(),
         elevation = 4.dp,
         backgroundColor = Color.White,
@@ -77,7 +78,7 @@ fun GameItem(game: FreeGamesItem) {
 @Composable
 fun ImageCompo(game: FreeGamesItem) {
     Image(
-        painter = rememberImagePainter(game.thumbnail),
+        painter = rememberAsyncImagePainter(game.thumbnail),
         contentDescription = null ,
         modifier = Modifier
             .padding(8.dp)
@@ -85,3 +86,8 @@ fun ImageCompo(game: FreeGamesItem) {
             .clip(RoundedCornerShape(corner = CornerSize(16.dp)))
     )
 }
+
+
+
+
+
